@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse as api_reverse
 
-# from accounts.api.serializers import UserPublicSerializer
+from accounts.api.serializers import UserPublicSerializer
 from status.models import Status
 
 '''
@@ -14,7 +14,7 @@ Serializers -> validate data
 class StatusSerializer(serializers.ModelSerializer):
     uri = serializers.SerializerMethodField(read_only=True)
     #user            = serializers.SerializerMethodField(read_only=True)
-    # user = UserPublicSerializer(read_only=True)
+    user = UserPublicSerializer(read_only=True)
     #user_id         = serializers.PrimaryKeyRelatedField(source='user', read_only=True)
     # user_id         = serializers.HyperlinkedRelatedField(
     #                         source='user',  # user foreign key

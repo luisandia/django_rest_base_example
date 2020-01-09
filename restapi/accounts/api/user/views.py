@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions, pagination
 from accounts.api.permissions import AnonPermissionOnly
-
+from rest_framework.response import Response
 
 from status.api.serializers import StatusInlineUserSerializer
 from status.api.views import StatusAPIView
@@ -14,7 +14,7 @@ User = get_user_model()
 
 
 class UserDetailAPIView(generics.RetrieveAPIView):
-    #permission_classes  = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes  = [permissions.IsAuthenticatedOrReadOnly]
     queryset = User.objects.filter(is_active=True)
     serializer_class = UserDetailSerializer
     lookup_field = 'username'  # id

@@ -48,8 +48,8 @@ with open(image_path, 'rb') as image:
     }
     r = requests.get(ENDPOINT, headers=headers2)
     print(r.text)
-    #r = requests.post(BASE_ENDPOInT, data=data2, headers=headers2, files=file_data)
-    #print(r.text)
+    r = requests.post(BASE_ENDPOInT, data=data2, headers=headers2, files=file_data)
+    print(r.text)
 
 
 

@@ -78,7 +78,7 @@ class StatusAPIView(
     # permission_classes = []
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = StatusSerializer
-    passed_id = None
+    # passed_id = None
     search_fields = ('user__username', 'content', 'user__email')
     ordering_fields = ('user__username', 'timestamp')
     queryset = Status.objects.all()
