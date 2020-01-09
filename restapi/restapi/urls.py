@@ -13,20 +13,24 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
 
-from updates.views import (
-    json_example_view,
-    JsonCVB,
-    JsonCVB2,
-    SerializedListView,
-    SerializedDetaileView
-)
+# from updates.views import (
+#     json_example_view,
+#     JsonCVB,
+#     JsonCVB2,
+#     SerializedListView,
+#     SerializedDetaileView
+# )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/updates/', include('updates.api.urls')),
+    path('api/status/', include('status.api.urls')),
+    path('api/auth/', include('accounts.api.urls')),
+    path('api/user/', include('accounts.api.user.urls')),
 
     # path('', json_example_view),
     # path('json/cbv/', JsonCVB.as_view()),
@@ -34,3 +38,6 @@ urlpatterns = [
     # path('json/serialized/list/', SerializedListView.as_view()),
     # path('json/serialized/detail/', SerializedDetaileView.as_view()),
 ]
+if settings.DEBUG:
+    from django.conf.urls.static import static
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
