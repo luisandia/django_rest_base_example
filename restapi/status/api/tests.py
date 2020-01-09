@@ -1,7 +1,7 @@
 import os
 import shutil
 import tempfile
-from PIL import Image # pip install pillow
+from PIL import Image  # pip install pillow
 
 from django.urls import reverse
 from rest_framework import status
@@ -14,22 +14,21 @@ from rest_framework_jwt.settings import api_settings
 
 from status.models import Status
 
-jwt_payload_handler             = api_settings.JWT_PAYLOAD_HANDLER
-jwt_encode_handler              = api_settings.JWT_ENCODE_HANDLER
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 User = get_user_model()
 
 
-class StatusAPITestCase(APITestCase): 
-    def setUp(self): 
-        user =  User.objects.create(username='testcfeuser', email='hello@cfe.com')
+class StatusAPITestCase(APITestCase):
+    def setUp(self):
+        user = User.objects.create(username='testcfeuser', email='hello@cfe.com')
         user.set_password("yeahhhcfe")
         user.save()
         status_obj = Status.objects.create(user=user, content='Hello there!')
 
     def test_statuses(self):
         self.assertEqual(Status.objects.count(), 1)
-
 
     def status_user_token(self):
         auth_url = api_reverse('api-auth:login')
@@ -69,8 +68,8 @@ class StatusAPITestCase(APITestCase):
         url = api_reverse('api-status:list')
         # (w, h) = (800, 1280)
         # (255, 255, 255)
-        image_item  = Image.new('RGB', (800, 1280), (0, 124, 174))
-        tmp_file    = tempfile.NamedTemporaryFile(suffix='.jpg')
+        image_item = Image.new('RGB', (800, 1280), (0, 124, 174))
+        tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image_item.save(tmp_file, format='JPEG')
         with open(tmp_file.name, 'rb') as file_obj:
             data = {
@@ -91,18 +90,16 @@ class StatusAPITestCase(APITestCase):
         url = api_reverse('api-status:list')
         # (w, h) = (800, 1280)
         # (255, 255, 255)
-        image_item  = Image.new('RGB', (800, 1280), (0, 124, 174))
-        tmp_file    = tempfile.NamedTemporaryFile(suffix='.jpg')
+        image_item = Image.new('RGB', (800, 1280), (0, 124, 174))
+        tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image_item.save(tmp_file, format='JPEG')
         with open(tmp_file.name, 'rb') as file_obj:
             data = {
-                'content': None,
+                'content': '',
                 'image': file_obj
             }
             response = self.client.post(url, data, format='multipart')
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-            
-
             self.assertEqual(Status.objects.count(), 2)
         temp_img_dir = os.path.join(settings.MEDIA_ROOT, 'status', 'testcfeuser')
         if os.path.exists(temp_img_dir):
@@ -136,7 +133,7 @@ class StatusAPITestCase(APITestCase):
         self.assertEqual(put_response.status_code, status.HTTP_200_OK)
         rud_response_data = put_response.data
         self.assertEqual(rud_response_data['content'], rud_data['content'])
-        
+
     def test_status_delete(self):
         data = self.create_item()
         data_id = data.get("id")
@@ -155,7 +152,6 @@ class StatusAPITestCase(APITestCase):
         get_response = self.client.get(rud_url, format='json')
         self.assertEqual(get_response.status_code, status.HTTP_404_NOT_FOUND)
 
-
     def test_status_no_token_create(self):
         url = api_reverse('api-status:list')
         data = {
@@ -164,21 +160,20 @@ class StatusAPITestCase(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-
     def test_other_user_permissions_api(self):
-        data            = self.create_item()
-        data_id         = data.get("id")
-        user            = User.objects.create(username='testjmitch')
-        payload         = jwt_payload_handler(user)
-        token           = jwt_encode_handler(payload)
+        data = self.create_item()
+        data_id = data.get("id")
+        user = User.objects.create(username='testjmitch')
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload)
         self.client.credentials(HTTP_AUTHORIZATION='JWT ' + token)
-        rud_url         = api_reverse('api-status:detail', kwargs={"id": data_id})
-        rud_data        = {
-                            'content': "smashing"
-                        }
-        get_            = self.client.get(rud_url, format='json')
-        put_            = self.client.put(rud_url, rud_data, format='json')
-        delete_         = self.client.delete(rud_url, format='json')
+        rud_url = api_reverse('api-status:detail', kwargs={"id": data_id})
+        rud_data = {
+            'content': "smashing"
+        }
+        get_ = self.client.get(rud_url, format='json')
+        put_ = self.client.put(rud_url, rud_data, format='json')
+        delete_ = self.client.delete(rud_url, format='json')
         self.assertEqual(get_.status_code, status.HTTP_200_OK)
         self.assertEqual(put_.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(delete_.status_code, status.HTTP_403_FORBIDDEN)
